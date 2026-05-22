@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copa do Mundo 2026 - Clean UI</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        h1 { margin: 0; color: var(--text-main); font-size: 24px; font-weight: 700; letter-spacing: -0.5px;}
+        h1 span { color: var(--primary); }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .tab-btn {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .actions { 
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px; 
+        }
+
+        .action-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            transition: 0.2s;
+        }
+
+        .btn-generate { background-color: var(--success); color: white; border-color: var(--success); }
+        .btn-generate:hover { background-color: #059669; }
+        .btn-clear:hover { background-color: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+
+        .container {
+            padding: 30px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .view { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .view.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .team-flag {
+            width: 20px;
+            height: 15px;
+            border-radius: 2px;
+            box-shadow: 0 0 2px rgba(0,0,0,0.2);
+            object-fit: cover;
+        }
+
+        /* Fase de Grupos */
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .group-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .group-card h3 {
+            margin: 0 0 15px 0;
+            color: var(--text-main);
+            font-size: 16px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+
+        .standings {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .standings th, .standings td {
+            padding: 6px 4px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .standings th { color: var(--text-muted); font-weight: 500; font-size: 12px; }
+        .standings td.team-name { text-align: left; font-weight: 500; }
+        .standings tr:nth-child(1) td, .standings tr:nth-child(2) td { background-color: #f0fdf4; } /* Top 2 */
+        .standings tr:nth-child(3) td { background-color: #fefce8; } /* 3rd place indicator */
+
+        .team-name-flex {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .group-matches {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .g-match {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-color);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            border: 1px solid var(--border-color);
+        }
+
+        .g-match input {
+            width: 28px;
+            height: 28px;
+            text-align: center;
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .g-match input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+
+        .team-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: 40%;
+        }
+        .team-label.right { flex-direction: row-reverse; }
+        .team-sigla { color: var(--text-muted); font-weight: 500; }
+
+        /* Mata-Mata */
+        .bracket-container {
+            display: flex;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            gap: 30px;
+            align-items: flex-start;
+            min-height: 70vh;
+        }
+
+        .round {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            min-width: 220px;
+            gap: 15px;
+            flex-grow: 1;
+        }
+
+        .round-title {
+            text-align: center;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .k-match {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .k-team {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .k-team-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-grow: 1;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .k-team-info input[type="text"] {
+            border: none;
+            background: transparent;
+            color: var(--text-main);
+            font-weight: 500;
+            width: 100%;
+            font-size: 13px;
+        }
+        .k-team-info input[type="text"]:focus { outline: none; }
+        
+        .k-team input[type="number"] {
+            width: 32px;
+            height: 30px;
+            text-align: center;
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .k-team input[type="number"]:focus { border-color: var(--primary); outline: none; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Copa do Mundo <span>2026</span></h1>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('groups')">Fase de Grupos</button>
+            <button class="tab-btn" onclick="switchTab('knockout')">Mata-Mata</button>
+        </div>
+        <div class="actions">
+            <button class="action-btn btn-generate" onclick="autoFillKnockout()">⚡ Gerar Chaveamento Automático</button>
+            <button class="action-btn btn-clear" onclick="resetAll()">Limpar Dados</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="groups" class="view active">
+            <div class="groups-grid" id="groups-container"></div>
+        </div>
+
+        <div id="knockout" class="view">
+            <p style="text-align:center; font-size: 14px; color: var(--text-muted); margin-bottom: 25px;">
+                O chaveamento avança os times automaticamente quando você insere um vencedor.<br>
+                Em caso de empate (pênaltis), digite o nome e a bandeira manualmente na fase seguinte.
+            </p>
+            <div class="bracket-container" id="bracket-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const groupsDef = {
+            A: [['México','mx'],['África do Sul','za'],['Coreia do Sul','kr'],['Rep. Tcheca','cz']],
+            B: [['Canadá','ca'],['Bósnia','ba'],['Catar','qa'],['Suíça','ch']],
+            C: [['Brasil','br'],['Marrocos','ma'],['Haiti','ht'],['Escócia','gb-sct']],
+            D: [['EUA','us'],['Paraguai','py'],['Austrália','au'],['Turquia','tr']],
+            E: [['Alemanha','de'],['Curaçau','cw'],['C. do Marfim','ci'],['Equador','ec']],
+            F: [['Holanda','nl'],['Japão','jp'],['Suécia','se'],['Tunísia','tn']],
+            G: [['Bélgica','be'],['Egito','eg'],['Irã','ir'],['Nova Zelândia','nz']],
+            H: [['Espanha','es'],['Cabo Verde','cv'],['Arábia Saudita','sa'],['Uruguai','uy']],
+            I: [['França','fr'],['Senegal','sn'],['Iraque','iq'],['Noruega','no']],
+            J: [['Argentina','ar'],['Argélia','dz'],['Áustria','at'],['Jordânia','jo']],
+            K: [['Portugal','pt'],['RD Congo','cd'],['Uzbequistão','uz'],['Colômbia','co']],
+            L: [['Inglaterra','gb-eng'],['Croácia','hr'],['Gana','gh'],['Panamá','pa']]
+        };
+
+        const kRounds = [
+            { id: 'r32', name: '16-Avos', matches: 16 },
+            { id: 'r16', name: 'Oitavas', matches: 8 },
+            { id: 'qf', name: 'Quartas', matches: 4 },
+            { id: 'sf', name: 'Semifinais', matches: 2 },
+            { id: 'f', name: 'Final', matches: 1 }
+        ];
+
+        let appData = JSON.parse(localStorage.getItem('copa26Clean')) || initData();
+
+        function initData() {
+            let data = { groups: {}, knockout: {} };
+            
+            for (let g in groupsDef) {
+                data.groups[g] = { matches: [] };
+                const pairs = [[0,1], [2,3], [0,2], [1,3], [0,3], [1,2]];
+                pairs.forEach((p, i) => {
+                    data.groups[g].matches.push({
+                        id: `g${g}-m${i}`,
+                        t1: groupsDef[g][p[0]][0], f1: groupsDef[g][p[0]][1], s1: '',
+                        t2: groupsDef[g][p[1]][0], f2: groupsDef[g][p[1]][1], s2: ''
+                    });
+                });
+            }
+
+            kRounds.forEach((r, rIdx) => {
+                data.knockout[r.id] = [];
+                for (let i = 0; i < r.matches; i++) {
+                    data.knockout[r.id].push({
+                        id: `${r.id}-${i}`,
+                        nextId: rIdx < kRounds.length - 1 ? `${kRounds[rIdx+1].id}-${Math.floor(i/2)}` : null,
+                        t1: '', f1: '', s1: '', 
+                        t2: '', f2: '', s2: ''
+                    });
+                }
+            });
+            return data;
+        }
+
+        function saveData() { localStorage.setItem('copa26Clean', JSON.stringify(appData)); }
+
+        function resetAll() {
+            if(confirm("Limpar todos os dados e começar de novo?")) {
+                localStorage.removeItem('copa26Clean');
+                appData = initData();
+                renderAll();
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function calcStandings(g) {
+            let table = groupsDef[g].map(t => ({ name: t[0], flag: t[1], pts:0, p:0, v:0, e:0, d:0, gf:0, gc:0, sg:0 }));
+            
+            appData.groups[g].matches.forEach(m => {
+                if (m.s1 !== '' && m.s2 !== '') {
+                    let s1 = parseInt(m.s1), s2 = parseInt(m.s2);
+                    let t1 = table.find(x => x.name === m.t1);
+                    let t2 = table.find(x => x.name === m.t2);
+                    
+                    t1.p++; t2.p++;
+                    t1.gf += s1; t1.gc += s2; t1.sg = t1.gf - t1.gc;
+                    t2.gf += s2; t2.gc += s1; t2.sg = t2.gf - t2.gc;
+
+                    if (s1 > s2) { t1.pts += 3; t1.v++; t2.d++; }
+                    else if (s2 > s1) { t2.pts += 3; t2.v++; t1.d++; }
+                    else { t1.pts += 1; t2.pts += 1; t1.e++; t2.e++; }
+                }
+            });
+            table.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gf - a.gf);
+            return table;
+        }
+
+        function updateGroupMatch(g, mIdx, field, val) {
+            appData.groups[g].matches[mIdx][field] = val;
+            saveData();
+            renderGroupCard(g);
+        }
+
+        function renderGroupCard(g) {
+            const card = document.getElementById(`card-${g}`);
+            const standings = calcStandings(g);
+            
+            let html = `<h3>Grupo ${g}</h3>
+                <table class="standings">
+                    <tr><th>Seleção</th><th>P</th><th>J</th><th>V</th><th>SG</th></tr>`;
+            
+            standings.forEach(t => {
+                html += `<tr>
+                    <td class="team-name">
+                        <div class="team-name-flex">
+                            <img src="https://flagcdn.com/20x15/${t.flag}.png" class="team-flag" alt="${t.name}" onerror="this.style.display='none'">
+                            ${t.name}
+                        </div>
+                    </td>
+                    <td><b>${t.pts}</b></td><td>${t.p}</td><td>${t.v}</td><td>${t.sg}</td>
+                </tr>`;
+            });
+            html += `</table><div class="group-matches">`;
+
+            appData.groups[g].matches.forEach((m, i) => {
+                html += `
+                    <div class="g-match">
+                        <div class="team-label">
+                            <img src="https://flagcdn.com/20x15/${m.f1}.png" class="team-flag"> 
+                            <span class="team-sigla">${m.t1.substring(0,3).toUpperCase()}</span>
+                        </div>
+                        <input type="number" min="0" value="${m.s1}" onchange="updateGroupMatch('${g}', ${i}, 's1', this.value)">
+                        <span style="color:var(--text-muted); font-size:12px;">x</span>
+                        <input type="number" min="0" value="${m.s2}" onchange="updateGroupMatch('${g}', ${i}, 's2', this.value)">
+                        <div class="team-label right">
+                            <img src="https://flagcdn.com/20x15/${m.f2}.png" class="team-flag"> 
+                            <span class="team-sigla">${m.t2.substring(0,3).toUpperCase()}</span>
+                        </div>
+                    </div>`;
+            });
+            html += `</div>`;
+            card.innerHTML = html;
+        }
+
+        // --- LÓGICA DE AUTO-PREENCHIMENTO DO MATA-MATA ---
+        function autoFillKnockout() {
+            let firsts = [], seconds = [], thirds = [];
+            
+            // Coleta os classificados de todos os grupos
+            for(let g in groupsDef) {
+                let st = calcStandings(g);
+                firsts.push(st[0]);
+                seconds.push(st[1]);
+                thirds.push(st[2]);
+            }
+
+            // Pega os 8 melhores terceiros (ordena por Pts > SG > Gols Pro)
+            thirds.sort((a,b) => b.pts - a.pts || b.sg - a.sg || b.gf - a.gf);
+            let bestThirds = thirds.slice(0, 8);
+
+            // Distribui nas 16 partidas dos 16-Avos
+            // Regra simplificada: 8 Lideres vs 8 Terceiros | 4 Lideres vs 4 Vices | 8 Vices vs 8 Vices
+            let matchups = [
+                [firsts[0], bestThirds[7]], [seconds[0], seconds[11]],
+                [firsts[1], bestThirds[6]], [seconds[1], seconds[10]],
+                [firsts[2], bestThirds[5]], [seconds[2], seconds[9]],
+                [firsts[3], bestThirds[4]], [seconds[3], seconds[8]],
+                [firsts[4], bestThirds[3]], [firsts[8], seconds[4]],
+                [firsts[5], bestThirds[2]], [firsts[9], seconds[5]],
+                [firsts[6], bestThirds[1]], [firsts[10], seconds[6]],
+                [firsts[7], bestThirds[0]], [firsts[11], seconds[7]]
+            ];
+
+            // Preenche o JSON do Mata-Mata (apenas a rodada inicial r32)
+            matchups.forEach((pair, idx) => {
+                appData.knockout['r32'][idx].t1 = pair[0].name;
+                appData.knockout['r32'][idx].f1 = pair[0].flag;
+                appData.knockout['r32'][idx].t2 = pair[1].name;
+                appData.knockout['r32'][idx].f2 = pair[1].flag;
+                // Reseta placares
+                appData.knockout['r32'][idx].s1 = '';
+                appData.knockout['r32'][idx].s2 = '';
+            });
+
+            saveData();
+            renderKnockout();
+            
+            // Pula pra aba do Mata-Mata pra ver a mágica
+            switchTab('knockout');
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            document.querySelectorAll('.tab-btn')[0].classList.remove('active');
+        }
+
+        // --- MATA-MATA RENDERING ---
+        function updateKMatch(rId, mIdx, field, val) {
+            appData.knockout[rId][mIdx][field] = val;
+            let match = appData.knockout[rId][mIdx];
+
+            if (match.s1 !== '' && match.s2 !== '' && match.nextId) {
+                let s1 = parseInt(match.s1), s2 = parseInt(match.s2);
+                let winnerName = '', winnerFlag = '';
+                
+                if (s1 > s2) { winnerName = match.t1; winnerFlag = match.f1; }
+                else if (s2 > s1) { winnerName = match.t2; winnerFlag = match.f2; }
+
+                if (winnerName) advanceTeam(match.nextId, mIdx, winnerName, winnerFlag);
+            }
+            saveData();
+        }
+
+        function advanceTeam(nextId, currIdx, winnerName, winnerFlag) {
+            for (let rId in appData.knockout) {
+                let match = appData.knockout[rId].find(m => m.id === nextId);
+                if (match) {
+                    if (currIdx % 2 === 0) { match.t1 = winnerName; match.f1 = winnerFlag; }
+                    else { match.t2 = winnerName; match.f2 = winnerFlag; }
+                    saveData();
+                    renderKnockout();
+                    break;
+                }
+            }
+        }
+
+        function renderKnockout() {
+            const container = document.getElementById('bracket-container');
+            container.innerHTML = '';
+
+            kRounds.forEach(r => {
+                const col = document.createElement('div');
+                col.className = 'round';
+                col.innerHTML = `<div class="round-title">${r.name}</div>`;
+
+                appData.knockout[r.id].forEach((m, i) => {
+                    let f1_html = m.f1 ? `<img src="https://flagcdn.com/20x15/${m.f1}.png" class="team-flag">` : `<div style="width:20px;height:15px;background:#e2e8f0;border-radius:2px;"></div>`;
+                    let f2_html = m.f2 ? `<img src="https://flagcdn.com/20x15/${m.f2}.png" class="team-flag">` : `<div style="width:20px;height:15px;background:#e2e8f0;border-radius:2px;"></div>`;
+
+                    col.innerHTML += `
+                        <div class="k-match">
+                            <div class="k-team">
+                                <div class="k-team-info">
+                                    ${f1_html}
+                                    <input type="text" placeholder="Seleção" value="${m.t1}" onchange="updateKMatch('${r.id}', ${i}, 't1', this.value)">
+                                </div>
+                                <input type="number" min="0" value="${m.s1}" onchange="updateKMatch('${r.id}', ${i}, 's1', this.value)">
+                            </div>
+                            <div class="k-team">
+                                <div class="k-team-info">
+                                    ${f2_html}
+                                    <input type="text" placeholder="Seleção" value="${m.t2}" onchange="updateKMatch('${r.id}', ${i}, 't2', this.value)">
+                                </div>
+                                <input type="number" min="0" value="${m.s2}" onchange="updateKMatch('${r.id}', ${i}, 's2', this.value)">
+                            </div>
+                        </div>`;
+                });
+                container.appendChild(col);
+            });
+        }
+
+        function renderAll() {
+            const gCont = document.getElementById('groups-container');
+            gCont.innerHTML = '';
+            for (let g in groupsDef) {
+                let div = document.createElement('div');
+                div.id = `card-${g}`;
+                div.className = 'group-card';
+                gCont.appendChild(div);
+                renderGroupCard(g);
+            }
+            renderKnockout();
+        }
+
+        renderAll();
+    </script>
+</body>
+</html>
