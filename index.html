@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Copa do Mundo 2026 - Clean UI</title>
+    <title>Copa do Mundo 2026 - Chaveamento Completo + Pênaltis com Select</title>
     <style>
         :root {
             --bg-color: #f8fafc;
@@ -12,8 +12,8 @@
             --text-muted: #64748b;
             --border-color: #e2e8f0;
             --primary: #2563eb;
-            --primary-hover: #1d4ed8;
             --success: #10b981;
+            --warning: #f59e0b;
         }
 
         body {
@@ -35,7 +35,7 @@
             z-index: 100;
         }
 
-        h1 { margin: 0; color: var(--text-main); font-size: 24px; font-weight: 700; letter-spacing: -0.5px;}
+        h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;}
         h1 span { color: var(--primary); }
 
         .tabs {
@@ -78,7 +78,6 @@
             cursor: pointer;
             font-size: 13px;
             font-weight: 600;
-            color: var(--text-main);
             transition: 0.2s;
         }
 
@@ -105,7 +104,6 @@
             object-fit: cover;
         }
 
-        /* Fase de Grupos */
         .groups-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -122,7 +120,6 @@
 
         .group-card h3 {
             margin: 0 0 15px 0;
-            color: var(--text-main);
             font-size: 16px;
             font-weight: 600;
             border-bottom: 2px solid var(--primary);
@@ -145,8 +142,8 @@
 
         .standings th { color: var(--text-muted); font-weight: 500; font-size: 12px; }
         .standings td.team-name { text-align: left; font-weight: 500; }
-        .standings tr:nth-child(1) td, .standings tr:nth-child(2) td { background-color: #f0fdf4; } /* Top 2 */
-        .standings tr:nth-child(3) td { background-color: #fefce8; } /* 3rd place indicator */
+        .standings tr:nth-child(1) td, .standings tr:nth-child(2) td { background-color: #f0fdf4; }
+        .standings tr:nth-child(3) td { background-color: #fefce8; }
 
         .team-name-flex {
             display: flex;
@@ -176,7 +173,6 @@
             height: 28px;
             text-align: center;
             background: var(--card-bg);
-            color: var(--text-main);
             border: 1px solid var(--border-color);
             border-radius: 4px;
             font-size: 14px;
@@ -212,7 +208,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-around;
-            min-width: 220px;
+            min-width: 260px;
             gap: 15px;
             flex-grow: 1;
         }
@@ -236,7 +232,6 @@
             flex-direction: column;
             gap: 6px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            position: relative;
         }
 
         .k-team {
@@ -257,29 +252,59 @@
             border-radius: 4px;
         }
 
-        .k-team-info input[type="text"] {
-            border: none;
-            background: transparent;
-            color: var(--text-main);
+        .k-team-info span {
             font-weight: 500;
-            width: 100%;
             font-size: 13px;
         }
-        .k-team-info input[type="text"]:focus { outline: none; }
-        
+
         .k-team input[type="number"] {
             width: 32px;
             height: 30px;
             text-align: center;
             background: var(--card-bg);
-            color: var(--text-main);
             border: 1px solid var(--border-color);
             border-radius: 4px;
             font-weight: 600;
             font-size: 14px;
         }
-        .k-team input[type="number"]:focus { border-color: var(--primary); outline: none; }
 
+        .penalty-area {
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px dashed var(--warning);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .penalty-area select {
+            flex: 1;
+            padding: 4px 8px;
+            font-size: 11px;
+            border: 1px solid var(--warning);
+            border-radius: 4px;
+            background: #fffbeb;
+            font-weight: 500;
+        }
+
+        .penalty-label {
+            font-size: 11px;
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .winner-badge {
+            font-size: 11px;
+            background: #dcfce7;
+            padding: 4px 8px;
+            border-radius: 20px;
+            color: #15803d;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 6px;
+        }
     </style>
 </head>
 <body>
@@ -303,8 +328,8 @@
 
         <div id="knockout" class="view">
             <p style="text-align:center; font-size: 14px; color: var(--text-muted); margin-bottom: 25px;">
-                O chaveamento avança os times automaticamente quando você insere um vencedor.<br>
-                Em caso de empate (pênaltis), digite o nome e a bandeira manualmente na fase seguinte.
+                ⚡ Preencha os placares. Em caso de empate, escolha o vencedor nos pênaltis no menu suspenso.<br>
+                O chaveamento avança automaticamente nas próximas fases.
             </p>
             <div class="bracket-container" id="bracket-container"></div>
         </div>
@@ -331,13 +356,14 @@
             { id: 'r16', name: 'Oitavas', matches: 8 },
             { id: 'qf', name: 'Quartas', matches: 4 },
             { id: 'sf', name: 'Semifinais', matches: 2 },
+            { id: 'third', name: '3º Lugar', matches: 1 },
             { id: 'f', name: 'Final', matches: 1 }
         ];
 
         let appData = JSON.parse(localStorage.getItem('copa26Clean')) || initData();
 
         function initData() {
-            let data = { groups: {}, knockout: {} };
+            let data = { groups: {}, knockout: {}, thirdMatch: null };
             
             for (let g in groupsDef) {
                 data.groups[g] = { matches: [] };
@@ -351,17 +377,25 @@
                 });
             }
 
-            kRounds.forEach((r, rIdx) => {
+            kRounds.forEach((r) => {
                 data.knockout[r.id] = [];
                 for (let i = 0; i < r.matches; i++) {
+                    let nextRoundId = null;
+                    if (r.id === 'r32') nextRoundId = 'r16';
+                    else if (r.id === 'r16') nextRoundId = 'qf';
+                    else if (r.id === 'qf') nextRoundId = 'sf';
+                    
                     data.knockout[r.id].push({
                         id: `${r.id}-${i}`,
-                        nextId: rIdx < kRounds.length - 1 ? `${kRounds[rIdx+1].id}-${Math.floor(i/2)}` : null,
+                        nextId: nextRoundId ? `${nextRoundId}-${Math.floor(i/2)}` : null,
                         t1: '', f1: '', s1: '', 
-                        t2: '', f2: '', s2: ''
+                        t2: '', f2: '', s2: '',
+                        penaltyWinner: ''
                     });
                 }
             });
+            
+            data.thirdMatch = { t1: '', f1: '', t2: '', f2: '', s1: '', s2: '', penaltyWinner: '' };
             return data;
         }
 
@@ -379,7 +413,8 @@
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+            if (event && event.target) event.target.classList.add('active');
+            if (tabId === 'knockout') renderKnockout();
         }
 
         function calcStandings(g) {
@@ -412,6 +447,7 @@
 
         function renderGroupCard(g) {
             const card = document.getElementById(`card-${g}`);
+            if (!card) return;
             const standings = calcStandings(g);
             
             let html = `<h3>Grupo ${g}</h3>
@@ -422,7 +458,7 @@
                 html += `<tr>
                     <td class="team-name">
                         <div class="team-name-flex">
-                            <img src="https://flagcdn.com/20x15/${t.flag}.png" class="team-flag" alt="${t.name}" onerror="this.style.display='none'">
+                            <img src="https://flagcdn.com/20x15/${t.flag}.png" class="team-flag" onerror="this.style.display='none'">
                             ${t.name}
                         </div>
                     </td>
@@ -439,7 +475,7 @@
                             <span class="team-sigla">${m.t1.substring(0,3).toUpperCase()}</span>
                         </div>
                         <input type="number" min="0" value="${m.s1}" onchange="updateGroupMatch('${g}', ${i}, 's1', this.value)">
-                        <span style="color:var(--text-muted); font-size:12px;">x</span>
+                        <span>x</span>
                         <input type="number" min="0" value="${m.s2}" onchange="updateGroupMatch('${g}', ${i}, 's2', this.value)">
                         <div class="team-label right">
                             <img src="https://flagcdn.com/20x15/${m.f2}.png" class="team-flag"> 
@@ -451,11 +487,9 @@
             card.innerHTML = html;
         }
 
-        // --- LÓGICA DE AUTO-PREENCHIMENTO DO MATA-MATA ---
         function autoFillKnockout() {
             let firsts = [], seconds = [], thirds = [];
             
-            // Coleta os classificados de todos os grupos
             for(let g in groupsDef) {
                 let st = calcStandings(g);
                 firsts.push(st[0]);
@@ -463,71 +497,134 @@
                 thirds.push(st[2]);
             }
 
-            // Pega os 8 melhores terceiros (ordena por Pts > SG > Gols Pro)
             thirds.sort((a,b) => b.pts - a.pts || b.sg - a.sg || b.gf - a.gf);
             let bestThirds = thirds.slice(0, 8);
 
-            // Distribui nas 16 partidas dos 16-Avos
-            // Regra simplificada: 8 Lideres vs 8 Terceiros | 4 Lideres vs 4 Vices | 8 Vices vs 8 Vices
-            let matchups = [
-                [firsts[0], bestThirds[7]], [seconds[0], seconds[11]],
-                [firsts[1], bestThirds[6]], [seconds[1], seconds[10]],
-                [firsts[2], bestThirds[5]], [seconds[2], seconds[9]],
-                [firsts[3], bestThirds[4]], [seconds[3], seconds[8]],
-                [firsts[4], bestThirds[3]], [firsts[8], seconds[4]],
-                [firsts[5], bestThirds[2]], [firsts[9], seconds[5]],
-                [firsts[6], bestThirds[1]], [firsts[10], seconds[6]],
-                [firsts[7], bestThirds[0]], [firsts[11], seconds[7]]
-            ];
+            let matchups = [];
+            for (let i = 0; i < 8; i++) {
+                matchups.push([firsts[i], bestThirds[7-i]]);
+                matchups.push([seconds[i], seconds[7-i]]);
+            }
 
-            // Preenche o JSON do Mata-Mata (apenas a rodada inicial r32)
             matchups.forEach((pair, idx) => {
-                appData.knockout['r32'][idx].t1 = pair[0].name;
-                appData.knockout['r32'][idx].f1 = pair[0].flag;
-                appData.knockout['r32'][idx].t2 = pair[1].name;
-                appData.knockout['r32'][idx].f2 = pair[1].flag;
-                // Reseta placares
-                appData.knockout['r32'][idx].s1 = '';
-                appData.knockout['r32'][idx].s2 = '';
+                if (idx < appData.knockout['r32'].length) {
+                    appData.knockout['r32'][idx].t1 = pair[0]?.name || '';
+                    appData.knockout['r32'][idx].f1 = pair[0]?.flag || '';
+                    appData.knockout['r32'][idx].t2 = pair[1]?.name || '';
+                    appData.knockout['r32'][idx].f2 = pair[1]?.flag || '';
+                    appData.knockout['r32'][idx].s1 = '';
+                    appData.knockout['r32'][idx].s2 = '';
+                    appData.knockout['r32'][idx].penaltyWinner = '';
+                }
             });
+
+            ['r16','qf','sf','f'].forEach(phase => {
+                appData.knockout[phase].forEach(m => {
+                    m.t1 = ''; m.t2 = ''; m.f1 = ''; m.f2 = '';
+                    m.s1 = ''; m.s2 = ''; m.penaltyWinner = '';
+                });
+            });
+            appData.thirdMatch = { t1: '', f1: '', t2: '', f2: '', s1: '', s2: '', penaltyWinner: '' };
 
             saveData();
             renderKnockout();
-            
-            // Pula pra aba do Mata-Mata pra ver a mágica
             switchTab('knockout');
-            document.querySelectorAll('.tab-btn')[1].classList.add('active');
-            document.querySelectorAll('.tab-btn')[0].classList.remove('active');
         }
 
-        // --- MATA-MATA RENDERING ---
         function updateKMatch(rId, mIdx, field, val) {
-            appData.knockout[rId][mIdx][field] = val;
-            let match = appData.knockout[rId][mIdx];
-
-            if (match.s1 !== '' && match.s2 !== '' && match.nextId) {
+            const match = appData.knockout[rId][mIdx];
+            match[field] = val;
+            
+            if (match.s1 !== '' && match.s2 !== '' && match.t1 && match.t2) {
                 let s1 = parseInt(match.s1), s2 = parseInt(match.s2);
                 let winnerName = '', winnerFlag = '';
+                let winnerDetermined = false;
                 
-                if (s1 > s2) { winnerName = match.t1; winnerFlag = match.f1; }
-                else if (s2 > s1) { winnerName = match.t2; winnerFlag = match.f2; }
+                if (!isNaN(s1) && !isNaN(s2)) {
+                    if (s1 > s2) { winnerName = match.t1; winnerFlag = match.f1; winnerDetermined = true; }
+                    else if (s2 > s1) { winnerName = match.t2; winnerFlag = match.f2; winnerDetermined = true; }
+                    else if (match.penaltyWinner) {
+                        winnerName = match.penaltyWinner;
+                        winnerFlag = (winnerName === match.t1) ? match.f1 : match.f2;
+                        winnerDetermined = true;
+                    }
+                }
+                
+                if (winnerDetermined && winnerName) {
+                    advanceTeam(rId, mIdx, winnerName, winnerFlag);
+                }
+            }
+            saveData();
+            renderKnockout();
+        }
 
-                if (winnerName) advanceTeam(match.nextId, mIdx, winnerName, winnerFlag);
+        function advanceTeam(rId, mIdx, winnerName, winnerFlag) {
+            if (rId === 'r32') advanceToNext(winnerName, winnerFlag, 'r16', mIdx);
+            else if (rId === 'r16') advanceToNext(winnerName, winnerFlag, 'qf', mIdx);
+            else if (rId === 'qf') advanceToNext(winnerName, winnerFlag, 'sf', mIdx);
+            else if (rId === 'sf') {
+                if (mIdx === 0) {
+                    if (appData.knockout['f'][0]) {
+                        appData.knockout['f'][0].t1 = winnerName;
+                        appData.knockout['f'][0].f1 = winnerFlag;
+                    }
+                    const loser = getLoserFromMatch('sf', 0);
+                    if (loser && appData.thirdMatch) {
+                        appData.thirdMatch.t1 = loser.name;
+                        appData.thirdMatch.f1 = loser.flag;
+                    }
+                } else if (mIdx === 1) {
+                    if (appData.knockout['f'][0]) {
+                        appData.knockout['f'][0].t2 = winnerName;
+                        appData.knockout['f'][0].f2 = winnerFlag;
+                    }
+                    const loser = getLoserFromMatch('sf', 1);
+                    if (loser && appData.thirdMatch) {
+                        appData.thirdMatch.t2 = loser.name;
+                        appData.thirdMatch.f2 = loser.flag;
+                    }
+                }
+                saveData();
+            }
+        }
+        
+        function getLoserFromMatch(rId, mIdx) {
+            const match = appData.knockout[rId][mIdx];
+            if (!match || !match.t1 || !match.t2) return null;
+            let s1 = parseInt(match.s1), s2 = parseInt(match.s2);
+            if (isNaN(s1) || isNaN(s2)) return null;
+            
+            if (s1 > s2) return { name: match.t2, flag: match.f2 };
+            else if (s2 > s1) return { name: match.t1, flag: match.f1 };
+            else if (match.penaltyWinner) {
+                return (match.penaltyWinner === match.t1) ? { name: match.t2, flag: match.f2 } : { name: match.t1, flag: match.f1 };
+            }
+            return null;
+        }
+        
+        function advanceToNext(winnerName, winnerFlag, nextPhase, currentIdx) {
+            const nextMatchIdx = Math.floor(currentIdx / 2);
+            const targetMatch = appData.knockout[nextPhase][nextMatchIdx];
+            if (!targetMatch) return;
+            
+            if (currentIdx % 2 === 0) {
+                targetMatch.t1 = winnerName;
+                targetMatch.f1 = winnerFlag;
+            } else {
+                targetMatch.t2 = winnerName;
+                targetMatch.f2 = winnerFlag;
             }
             saveData();
         }
 
-        function advanceTeam(nextId, currIdx, winnerName, winnerFlag) {
-            for (let rId in appData.knockout) {
-                let match = appData.knockout[rId].find(m => m.id === nextId);
-                if (match) {
-                    if (currIdx % 2 === 0) { match.t1 = winnerName; match.f1 = winnerFlag; }
-                    else { match.t2 = winnerName; match.f2 = winnerFlag; }
-                    saveData();
-                    renderKnockout();
-                    break;
-                }
+        function updateThirdMatch(field, val) {
+            if (field === 'penaltyWinner') {
+                appData.thirdMatch.penaltyWinner = val;
+            } else {
+                appData.thirdMatch[field] = val;
             }
+            saveData();
+            renderKnockout();
         }
 
         function renderKnockout() {
@@ -539,28 +636,103 @@
                 col.className = 'round';
                 col.innerHTML = `<div class="round-title">${r.name}</div>`;
 
-                appData.knockout[r.id].forEach((m, i) => {
-                    let f1_html = m.f1 ? `<img src="https://flagcdn.com/20x15/${m.f1}.png" class="team-flag">` : `<div style="width:20px;height:15px;background:#e2e8f0;border-radius:2px;"></div>`;
-                    let f2_html = m.f2 ? `<img src="https://flagcdn.com/20x15/${m.f2}.png" class="team-flag">` : `<div style="width:20px;height:15px;background:#e2e8f0;border-radius:2px;"></div>`;
-
+                if (r.id === 'third') {
+                    const tm = appData.thirdMatch;
+                    const showPenalty = (tm.s1 !== '' && tm.s2 !== '' && parseInt(tm.s1) === parseInt(tm.s2));
                     col.innerHTML += `
                         <div class="k-match">
                             <div class="k-team">
                                 <div class="k-team-info">
-                                    ${f1_html}
-                                    <input type="text" placeholder="Seleção" value="${m.t1}" onchange="updateKMatch('${r.id}', ${i}, 't1', this.value)">
+                                    ${tm.f1 ? `<img src="https://flagcdn.com/20x15/${tm.f1}.png" class="team-flag">` : '<div style="width:20px;height:15px;background:#e2e8f0;"></div>'}
+                                    <span>${tm.t1 || '?'}</span>
                                 </div>
-                                <input type="number" min="0" value="${m.s1}" onchange="updateKMatch('${r.id}', ${i}, 's1', this.value)">
+                                <input type="number" min="0" value="${tm.s1}" onchange="updateThirdMatch('s1', this.value)">
                             </div>
                             <div class="k-team">
                                 <div class="k-team-info">
-                                    ${f2_html}
-                                    <input type="text" placeholder="Seleção" value="${m.t2}" onchange="updateKMatch('${r.id}', ${i}, 't2', this.value)">
+                                    ${tm.f2 ? `<img src="https://flagcdn.com/20x15/${tm.f2}.png" class="team-flag">` : '<div style="width:20px;height:15px;background:#e2e8f0;"></div>'}
+                                    <span>${tm.t2 || '?'}</span>
                                 </div>
-                                <input type="number" min="0" value="${m.s2}" onchange="updateKMatch('${r.id}', ${i}, 's2', this.value)">
+                                <input type="number" min="0" value="${tm.s2}" onchange="updateThirdMatch('s2', this.value)">
                             </div>
+                            ${showPenalty ? `
+                            <div class="penalty-area">
+                                <span class="penalty-label">⚽ VENCEDOR NOS PÊNALTIS:</span>
+                                <select onchange="updateThirdMatch('penaltyWinner', this.value)">
+                                    <option value="">Selecione...</option>
+                                    <option value="${tm.t1}" ${tm.penaltyWinner === tm.t1 ? 'selected' : ''}>${tm.t1 || 'Time 1'}</option>
+                                    <option value="${tm.t2}" ${tm.penaltyWinner === tm.t2 ? 'selected' : ''}>${tm.t2 || 'Time 2'}</option>
+                                </select>
+                            </div>` : ''}
+                            ${(tm.s1 !== '' && tm.s2 !== '' && ((parseInt(tm.s1) > parseInt(tm.s2)) || (parseInt(tm.s2) > parseInt(tm.s1)) || tm.penaltyWinner)) ? 
+                                `<div class="winner-badge">🥉 3º LUGAR: ${(parseInt(tm.s1) > parseInt(tm.s2)) ? tm.t1 : (parseInt(tm.s2) > parseInt(tm.s1)) ? tm.t2 : tm.penaltyWinner}</div>` : ''}
                         </div>`;
-                });
+                } 
+                else if (r.id === 'f') {
+                    const m = appData.knockout['f'][0];
+                    if(m) {
+                        const showPenalty = (m.s1 !== '' && m.s2 !== '' && parseInt(m.s1) === parseInt(m.s2));
+                        col.innerHTML += `
+                            <div class="k-match">
+                                <div class="k-team">
+                                    <div class="k-team-info">
+                                        ${m.f1 ? `<img src="https://flagcdn.com/20x15/${m.f1}.png" class="team-flag">` : '<div style="width:20px;height:15px;background:#e2e8f0;"></div>'}
+                                        <span>${m.t1 || '?'}</span>
+                                    </div>
+                                    <input type="number" min="0" value="${m.s1}" onchange="updateKMatch('f', 0, 's1', this.value)">
+                                </div>
+                                <div class="k-team">
+                                    <div class="k-team-info">
+                                        ${m.f2 ? `<img src="https://flagcdn.com/20x15/${m.f2}.png" class="team-flag">` : '<div style="width:20px;height:15px;background:#e2e8f0;"></div>'}
+                                        <span>${m.t2 || '?'}</span>
+                                    </div>
+                                    <input type="number" min="0" value="${m.s2}" onchange="updateKMatch('f', 0, 's2', this.value)">
+                                </div>
+                                ${showPenalty ? `
+                                <div class="penalty-area">
+                                    <span class="penalty-label">⚽ VENCEDOR NOS PÊNALTIS:</span>
+                                    <select onchange="updateKMatch('f', 0, 'penaltyWinner', this.value)">
+                                        <option value="">Selecione...</option>
+                                        <option value="${m.t1}" ${m.penaltyWinner === m.t1 ? 'selected' : ''}>${m.t1 || 'Time 1'}</option>
+                                        <option value="${m.t2}" ${m.penaltyWinner === m.t2 ? 'selected' : ''}>${m.t2 || 'Time 2'}</option>
+                                    </select>
+                                </div>` : ''}
+                                ${(m.s1 !== '' && m.s2 !== '' && ((parseInt(m.s1) > parseInt(m.s2)) || (parseInt(m.s2) > parseInt(m.s1)) || m.penaltyWinner)) ? 
+                                    `<div class="winner-badge">🏆 CAMPEÃO: ${(parseInt(m.s1) > parseInt(m.s2)) ? m.t1 : (parseInt(m.s2) > parseInt(m.s1)) ? m.t2 : m.penaltyWinner}</div>` : ''}
+                            </div>`;
+                    }
+                }
+                else {
+                    appData.knockout[r.id].forEach((m, i) => {
+                        const showPenalty = (m.s1 !== '' && m.s2 !== '' && parseInt(m.s1) === parseInt(m.s2));
+                        col.innerHTML += `
+                            <div class="k-match">
+                                <div class="k-team">
+                                    <div class="k-team-info">
+                                        ${m.f1 ? `<img src="https://flagcdn.com/20x15/${m.f1}.png" class="team-flag">` : '<div style="width:20px;height:15px;background:#e2e8f0;"></div>'}
+                                        <span>${m.t1 || '?'}</span>
+                                    </div>
+                                    <input type="number" min="0" value="${m.s1}" onchange="updateKMatch('${r.id}', ${i}, 's1', this.value)">
+                                </div>
+                                <div class="k-team">
+                                    <div class="k-team-info">
+                                        ${m.f2 ? `<img src="https://flagcdn.com/20x15/${m.f2}.png" class="team-flag">` : '<div style="width:20px;height:15px;background:#e2e8f0;"></div>'}
+                                        <span>${m.t2 || '?'}</span>
+                                    </div>
+                                    <input type="number" min="0" value="${m.s2}" onchange="updateKMatch('${r.id}', ${i}, 's2', this.value)">
+                                </div>
+                                ${showPenalty ? `
+                                <div class="penalty-area">
+                                    <span class="penalty-label">⚽ VENCEDOR NOS PÊNALTIS:</span>
+                                    <select onchange="updateKMatch('${r.id}', ${i}, 'penaltyWinner', this.value)">
+                                        <option value="">Selecione...</option>
+                                        <option value="${m.t1}" ${m.penaltyWinner === m.t1 ? 'selected' : ''}>${m.t1 || 'Time 1'}</option>
+                                        <option value="${m.t2}" ${m.penaltyWinner === m.t2 ? 'selected' : ''}>${m.t2 || 'Time 2'}</option>
+                                    </select>
+                                </div>` : ''}
+                            </div>`;
+                    });
+                }
                 container.appendChild(col);
             });
         }
