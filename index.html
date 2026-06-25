@@ -13,48 +13,16 @@
 --success: #10b981;
 --warning: #f59e0b;
 }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 0; padding-bottom: 80px; /* Espaço para o FAB não cobrir conteúdo */ }
 header { background-color: var(--card-bg); padding: 20px; text-align: center; border-bottom: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
 h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;}
 h1 span { color: var(--primary); }
-.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; position: relative; }
-.tabs-wrapper { position: absolute; left: 50%; transform: translateX(-50%); width: max-content; max-width: 90vw; overflow-x: auto; }
-.tabs { display: flex; gap: 10px; }
+
+/* === CABEÇALHO SIMPLIFICADO === */
+.nav-row { display: flex; justify-content: center; align-items: center; margin-top: 15px; }
+.tabs-wrapper { display: flex; gap: 10px; }
 .tab-btn { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-weight: 500; font-size: 14px; white-space: nowrap; }
 .tab-btn.active, .tab-btn:hover { background-color: var(--primary); color: white; border-color: var(--primary); }
-.actions { display: flex; margin: 0; }
-.actions-menu { position: relative; display: inline-block; }
-.menu-trigger { background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
-.menu-trigger:hover { background-color: var(--primary); color: white; border-color: var(--primary); }
-
-/* === CORREÇÃO DO MENU DROPDOWN (ALINHADO À ESQUERDA) === */
-.menu-dropdown {
-display: none;
-position: absolute;
-top: 100%;
-left: 0; /* Alinha à esquerda do botão */
-right: auto;
-margin-top: 8px;
-background: var(--card-bg);
-border: 1px solid var(--border-color);
-border-radius: 8px;
-box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-padding: 6px;
-min-width: 220px;
-max-width: 90vw; /* Evita que estoure a tela em celulares */
-z-index: 1000;
-animation: fadeIn 0.15s ease-out;
-}
-.menu-dropdown.show { display: block; }
-.menu-dropdown button { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 12px; border: none; background: transparent; color: var(--text-main); font-size: 13px; font-weight: 500; cursor: pointer; border-radius: 6px; transition: all 0.15s; text-align: left; }
-.menu-dropdown button:hover { background-color: #f1f5f9; }
-.menu-dropdown .btn-generate-menu { color: #059669; font-weight: 600; }
-.menu-dropdown .btn-danger-menu { color: #dc2626; }
-.menu-dropdown .btn-html-menu { color: #7c3aed; font-weight: 600; }
-.menu-dropdown .btn-backup-menu { color: #0369a1; }
-.menu-divider { height: 1px; background: var(--border-color); margin: 6px 0; }
-.menu-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 999; }
-.menu-overlay.show { display: block; }
 
 .container { padding: 30px 20px; max-width: 1400px; margin: 0 auto; }
 .view { display: none; animation: fadeIn 0.3s ease-in-out; }
@@ -89,9 +57,6 @@ animation: fadeIn 0.15s ease-out;
 .penalty-area select { flex: 1; padding: 4px 8px; font-size: 11px; border: 1px solid var(--warning); border-radius: 4px; background: #fffbeb; font-weight: 500; }
 .penalty-label { font-size: 11px; color: var(--warning); font-weight: 600; }
 .winner-badge { font-size: 11px; background: #dcfce7; padding: 4px 8px; border-radius: 20px; color: #15803d; font-weight: 600; text-align: center; margin-top: 6px; }
-.toast-msg { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--success); color: white; padding: 12px 28px; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); z-index: 10000; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; }
-.toast-msg.show { transform: translateX(-50%) translateY(0); }
-#fileInputBackup { display: none; }
 
 /* === ESTILOS PARA A ABA DE 3º COLOCADOS === */
 .thirds-wrapper { max-width: 900px; margin: 0 auto; background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
@@ -104,6 +69,124 @@ animation: fadeIn 0.15s ease-out;
 .thirds-table tr.eliminated { background-color: #fef2f2; color: #991b1b; opacity: 0.8; }
 .thirds-table tr.eliminated td:first-child { font-weight: 700; }
 .thirds-table tr:hover { filter: brightness(0.97); }
+
+/* === TOAST === */
+.toast-msg { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--success); color: white; padding: 12px 28px; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); z-index: 10000; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; }
+.toast-msg.show { transform: translateX(-50%) translateY(0); }
+
+/* === FAB (FLOATING ACTION BUTTON) === */
+.fab-wrapper {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.fab-button {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1002;
+}
+.fab-button:hover { background-color: #1d4ed8; transform: scale(1.05); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.5); }
+.fab-button:active { transform: scale(0.95); }
+
+/* Ícone Hambúrguer (CSS Puro) */
+.hamburger-icon {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background-color: white;
+    position: relative;
+    transition: all 0.3s ease;
+}
+.hamburger-icon::before, .hamburger-icon::after {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 2px;
+    background-color: white;
+    left: 0;
+    transition: all 0.3s ease;
+}
+.hamburger-icon::before { top: -7px; }
+.hamburger-icon::after { top: 7px; }
+
+/* Animação para X */
+.fab-wrapper.open .hamburger-icon { background-color: transparent; }
+.fab-wrapper.open .hamburger-icon::before { top: 0; transform: rotate(45deg); }
+.fab-wrapper.open .hamburger-icon::after { top: 0; transform: rotate(-45deg); }
+
+/* Menu Dropdown (Abre para cima) */
+.fab-menu {
+    position: absolute;
+    bottom: 70px; /* Acima do botão */
+    right: 0;
+    top: auto !important;
+    margin-bottom: 12px;
+    margin-top: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    padding: 8px;
+    min-width: 240px;
+    max-width: 90vw;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 1001;
+    display: none;
+}
+.fab-menu.show { display: block; animation: slideUp 0.2s ease-out; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.fab-menu button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 14px;
+    border: none;
+    background: transparent;
+    color: var(--text-main);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.15s;
+    text-align: left;
+}
+.fab-menu button:hover { background-color: #f1f5f9; }
+.fab-menu .btn-generate-menu { color: #059669; font-weight: 600; }
+.fab-menu .btn-danger-menu { color: #dc2626; }
+.fab-menu .btn-html-menu { color: #7c3aed; font-weight: 600; }
+.fab-menu .btn-backup-menu { color: #0369a1; }
+.fab-menu .menu-divider { height: 1px; background: var(--border-color); margin: 6px 0; }
+
+/* Overlay de fundo */
+.menu-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 999; backdrop-filter: blur(2px); }
+.menu-overlay.show { display: block; }
+
+#fileInputBackup { display: none; }
+
+/* === IMPRESSÃO === */
+@media print {
+    .fab-wrapper, .menu-overlay, .toast-msg { display: none !important; }
+    body { padding-bottom: 0; }
+    header { position: static; box-shadow: none; border-bottom: 2px solid #000; }
+    .group-card, .k-match { break-inside: avoid; page-break-inside: avoid; }
+}
 </style>
 </head>
 <body>
@@ -111,30 +194,13 @@ animation: fadeIn 0.15s ease-out;
 <h1>Copa do Mundo <span>2026</span></h1>
 <div class="nav-row">
 <div class="tabs-wrapper">
-<div class="tabs">
 <button class="tab-btn active" onclick="switchTab('groups')">Fase de Grupos</button>
 <button class="tab-btn" onclick="switchTab('thirds')">3º Colocados</button>
 <button class="tab-btn" onclick="switchTab('knockout')">Mata-Mata</button>
 </div>
 </div>
-<div class="actions">
-<div class="actions-menu">
-<button class="menu-trigger" onclick="toggleMenu()">⚙️ <span style="font-size:10px;">▼</span></button>
-<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
-<div class="menu-dropdown" id="menuDropdown">
-<button class="btn-generate-menu" onclick="executarAcao('autoFillKnockout')">⚡ Gerar Chaveamento Oficial</button>
-<button class="btn-backup-menu" onclick="executarAcao('exportarJSON')">💾 Salvar Backup</button>
-<button onclick="document.getElementById('fileInputBackup').click()">📂 Carregar Backup</button>
-<button class="btn-html-menu" onclick="executarAcao('gerarHTML')">🌐 Exportar HTML</button>
-<div class="menu-divider"></div>
-<button onclick="executarAcao('limparMataMata')">🗑️ Limpar Mata-Mata</button>
-<button class="btn-danger-menu" onclick="executarAcao('resetAll')">🔄 Limpar Tudo</button>
-</div>
-</div>
-</div>
-</div>
-<input type="file" id="fileInputBackup" accept=".json" onchange="importarJSON(event)" style="display:none;">
 </header>
+
 <div class="container">
 <!-- ABA GRUPOS -->
 <div id="groups" class="view active"><div class="groups-grid" id="groups-container"></div></div>
@@ -159,6 +225,24 @@ Em caso de empate, escolha o vencedor nos pênaltis. O avanço é automático.
 <div class="bracket-container" id="bracket-container"></div>
 </div>
 </div>
+
+<!-- === FAB (BOTÃO FLUTUANTE DE AÇÕES) === -->
+<div class="fab-wrapper" id="fabWrapper">
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+<div class="fab-menu" id="menuDropdown">
+<button class="btn-generate-menu" onclick="executarAcao('autoFillKnockout')">⚡ Gerar Chaveamento Oficial</button>
+<button class="btn-backup-menu" onclick="executarAcao('exportarJSON')">💾 Salvar Backup</button>
+<button onclick="document.getElementById('fileInputBackup').click()">📂 Carregar Backup</button>
+<button class="btn-html-menu" onclick="executarAcao('gerarHTML')">🌐 Exportar HTML</button>
+<div class="menu-divider"></div>
+<button onclick="executarAcao('limparMataMata')">🗑️ Limpar Mata-Mata</button>
+<button class="btn-danger-menu" onclick="executarAcao('resetAll')">🔄 Limpar Tudo</button>
+</div>
+<button class="fab-button" onclick="toggleMenu()" aria-label="Menu de Ações">
+<span class="hamburger-icon"></span>
+</button>
+</div>
+<input type="file" id="fileInputBackup" accept=".json" onchange="importarJSON(event)" style="display:none;">
 
 <script>
 const groupsDef = {
@@ -263,188 +347,85 @@ html += `<div class="g-match"><div class="team-label"><img src="https://flagcdn.
 html += `</div>`; card.innerHTML = html;
 }
 
-// ===================================================================
-// NOVA FUNÇÃO: RENDERIZAR ABA DOS 3º COLOCADOS
-// ===================================================================
 function renderThirdsView() {
 const container = document.getElementById('thirds-container');
 if (!container) return;
-
 let thirds = [];
 for (let g in groupsDef) {
 const st = calcStandings(g);
-if (st.length >= 3) {
-let team = { ...st[2], group: g };
-thirds.push(team);
+if (st.length >= 3) { let team = { ...st[2], group: g }; thirds.push(team); }
 }
-}
-
-// Ordena pelos critérios oficiais: Pontos -> Saldo -> Gols Pró
 thirds.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gf - a.gf);
-
-let html = `<table class="thirds-table">
-<thead>
-<tr>
-<th>#</th>
-<th>Seleção</th>
-<th>Grupo</th>
-<th>Pts</th>
-<th>J</th>
-<th>V</th>
-<th>E</th>
-<th>D</th>
-<th>SG</th>
-<th>GP</th>
-</tr>
-</thead>
-<tbody>`;
-
+let html = `<table class="thirds-table"><thead><tr><th>#</th><th>Seleção</th><th>Grupo</th><th>Pts</th><th>J</th><th>V</th><th>E</th><th>D</th><th>SG</th><th>GP</th></tr></thead><tbody>`;
 thirds.forEach((t, index) => {
 const isQualified = index < 8;
 const rowClass = isQualified ? 'qualified' : 'eliminated';
 const statusIcon = isQualified ? '✅' : '❌';
-
-html += `<tr class="${rowClass}">
-<td>${index + 1}º ${statusIcon}</td>
-<td class="team-col">
-<div class="team-name-flex">
-<img src="https://flagcdn.com/40x30/${t.flag}.png" class="team-flag" style="width:24px; height:18px;" onerror="this.style.display='none'">
-${t.name}
-</div>
-</td>
-<td><b>Grupo ${t.group}</b></td>
-<td><b>${t.pts}</b></td>
-<td>${t.p}</td>
-<td>${t.v}</td>
-<td>${t.e}</td>
-<td>${t.d}</td>
-<td>${t.sg > 0 ? '+' : ''}${t.sg}</td>
-<td>${t.gf}</td>
-</tr>`;
+html += `<tr class="${rowClass}"><td>${index + 1}º ${statusIcon}</td><td class="team-col"><div class="team-name-flex"><img src="https://flagcdn.com/40x30/${t.flag}.png" class="team-flag" style="width:24px; height:18px;" onerror="this.style.display='none'">${t.name}</div></td><td><b>Grupo ${t.group}</b></td><td><b>${t.pts}</b></td><td>${t.p}</td><td>${t.v}</td><td>${t.e}</td><td>${t.d}</td><td>${t.sg > 0 ? '+' : ''}${t.sg}</td><td>${t.gf}</td></tr>`;
 });
-
 html += `</tbody></table>`;
 container.innerHTML = html;
 }
 
-// ===================================================================
-// LÓGICA OFICIAL FIFA 2026 (MAPEAMENTO EXATO DAS PARTIDAS 73 A 102)
-// ===================================================================
-const r32ToR16 = {
-0: { m: 1, s: 0 }, 1: { m: 0, s: 0 }, 2: { m: 1, s: 1 }, 3: { m: 4, s: 0 },
-4: { m: 0, s: 1 }, 5: { m: 4, s: 1 }, 6: { m: 5, s: 0 }, 7: { m: 5, s: 1 },
-8: { m: 3, s: 0 }, 9: { m: 3, s: 1 }, 10: { m: 2, s: 0 }, 11: { m: 2, s: 1 },
-12: { m: 7, s: 0 }, 13: { m: 6, s: 0 }, 14: { m: 7, s: 1 }, 15: { m: 6, s: 1 }
-};
-const r16ToQF = {
-0: { m: 0, s: 0 }, 1: { m: 0, s: 1 }, 2: { m: 2, s: 0 }, 3: { m: 2, s: 1 },
-4: { m: 1, s: 0 }, 5: { m: 1, s: 1 }, 6: { m: 3, s: 0 }, 7: { m: 3, s: 1 }
-};
-const qfToSF = {
-0: { m: 0, s: 0 }, 1: { m: 0, s: 1 }, 2: { m: 1, s: 0 }, 3: { m: 1, s: 1 }
-};
+const r32ToR16 = { 0: { m: 1, s: 0 }, 1: { m: 0, s: 0 }, 2: { m: 1, s: 1 }, 3: { m: 4, s: 0 }, 4: { m: 0, s: 1 }, 5: { m: 4, s: 1 }, 6: { m: 5, s: 0 }, 7: { m: 5, s: 1 }, 8: { m: 3, s: 0 }, 9: { m: 3, s: 1 }, 10: { m: 2, s: 0 }, 11: { m: 2, s: 1 }, 12: { m: 7, s: 0 }, 13: { m: 6, s: 0 }, 14: { m: 7, s: 1 }, 15: { m: 6, s: 1 } };
+const r16ToQF = { 0: { m: 0, s: 0 }, 1: { m: 0, s: 1 }, 2: { m: 2, s: 0 }, 3: { m: 2, s: 1 }, 4: { m: 1, s: 0 }, 5: { m: 1, s: 1 }, 6: { m: 3, s: 0 }, 7: { m: 3, s: 1 } };
+const qfToSF = { 0: { m: 0, s: 0 }, 1: { m: 0, s: 1 }, 2: { m: 1, s: 0 }, 3: { m: 1, s: 1 } };
 
 function autoFillKnockout() {
 const incompletos = verificarGruposCompletos();
-if (incompletos.length > 0) {
-if (!confirm('Atenção! Grupos incompletos: ' + incompletos.join(', ') + '\nGerar mesmo assim?')) return;
-}
-
+if (incompletos.length > 0) { if (!confirm('Atenção! Grupos incompletos: ' + incompletos.join(', ') + '\nGerar mesmo assim?')) return; }
 let firsts = {}, seconds = {}, thirds = [];
 for(let g in groupsDef) {
 let st = calcStandings(g);
-firsts[g] = { ...st[0], group: g };
-seconds[g] = { ...st[1], group: g };
-thirds.push({ ...st[2], group: g });
+firsts[g] = { ...st[0], group: g }; seconds[g] = { ...st[1], group: g }; thirds.push({ ...st[2], group: g });
 }
-
 thirds.sort((a,b) => b.pts - a.pts || b.sg - a.sg || b.gf - a.gf);
 let bestThirds = thirds.slice(0, 8);
 let thirdGroups = bestThirds.map(t => t.group);
-
-const slotDefs = {
-0: ['A','B','C','D','F'], 1: ['C','D','F','G','H'], 6: ['B','E','F','I','J'],
-7: ['A','E','H','I','J'], 10: ['C','E','F','H','I'], 11: ['E','H','I','J','K'],
-14: ['E','F','G','I','J'], 15: ['D','E','I','J','L']
-};
-
+const slotDefs = { 0: ['A','B','C','D','F'], 1: ['C','D','F','G','H'], 6: ['B','E','F','I','J'], 7: ['A','E','H','I','J'], 10: ['C','E','F','H','I'], 11: ['E','H','I','J','K'], 14: ['E','F','G','I','J'], 15: ['D','E','I','J','L'] };
 let assignment = {};
 function solve(slotIndices, usedGroups) {
 if (slotIndices.length === 0) return true;
-let slot = slotIndices[0];
-let allowed = slotDefs[slot];
+let slot = slotIndices[0]; let allowed = slotDefs[slot];
 for (let g of thirdGroups) {
 if (!usedGroups.has(g) && allowed.includes(g)) {
-assignment[slot] = g;
-usedGroups.add(g);
+assignment[slot] = g; usedGroups.add(g);
 if (solve(slotIndices.slice(1), usedGroups)) return true;
-usedGroups.delete(g);
-delete assignment[slot];
+usedGroups.delete(g); delete assignment[slot];
 }
 }
 return false;
 }
-
-if (!solve(Object.keys(slotDefs).map(Number), new Set())) {
-alert("Erro: Não foi possível encaixar os 3º colocados nas regras da FIFA."); return;
-}
-
-const getTeam = (group, pos) => {
-if (pos === 1) return firsts[group];
-if (pos === 2) return seconds[group];
-if (pos === 3) return bestThirds.find(t => t.group === group);
-return null;
-};
-
+if (!solve(Object.keys(slotDefs).map(Number), new Set())) { alert("Erro: Não foi possível encaixar os 3º colocados."); return; }
+const getTeam = (group, pos) => { if (pos === 1) return firsts[group]; if (pos === 2) return seconds[group]; if (pos === 3) return bestThirds.find(t => t.group === group); return null; };
 let r32Matchups = new Array(16);
-r32Matchups[0] = [getTeam('E', 1), getTeam(assignment[0], 3)];
-r32Matchups[1] = [getTeam('I', 1), getTeam(assignment[1], 3)];
-r32Matchups[2] = [getTeam('A', 2), getTeam('B', 2)];
-r32Matchups[3] = [getTeam('F', 1), getTeam('C', 2)];
-r32Matchups[4] = [getTeam('K', 2), getTeam('L', 2)];
-r32Matchups[5] = [getTeam('H', 1), getTeam('J', 2)];
-r32Matchups[6] = [getTeam('D', 1), getTeam(assignment[6], 3)];
-r32Matchups[7] = [getTeam('G', 1), getTeam(assignment[7], 3)];
-r32Matchups[8] = [getTeam('C', 1), getTeam('F', 2)]; 
-r32Matchups[9] = [getTeam('E', 2), getTeam('I', 2)];
-r32Matchups[10] = [getTeam('A', 1), getTeam(assignment[10], 3)];
-r32Matchups[11] = [getTeam('L', 1), getTeam(assignment[11], 3)];
-r32Matchups[12] = [getTeam('J', 1), getTeam('H', 2)];
-r32Matchups[13] = [getTeam('D', 2), getTeam('G', 2)];
-r32Matchups[14] = [getTeam('B', 1), getTeam(assignment[14], 3)];
-r32Matchups[15] = [getTeam('K', 1), getTeam(assignment[15], 3)];
-
+r32Matchups[0] = [getTeam('E', 1), getTeam(assignment[0], 3)]; r32Matchups[1] = [getTeam('I', 1), getTeam(assignment[1], 3)];
+r32Matchups[2] = [getTeam('A', 2), getTeam('B', 2)]; r32Matchups[3] = [getTeam('F', 1), getTeam('C', 2)];
+r32Matchups[4] = [getTeam('K', 2), getTeam('L', 2)]; r32Matchups[5] = [getTeam('H', 1), getTeam('J', 2)];
+r32Matchups[6] = [getTeam('D', 1), getTeam(assignment[6], 3)]; r32Matchups[7] = [getTeam('G', 1), getTeam(assignment[7], 3)];
+r32Matchups[8] = [getTeam('C', 1), getTeam('F', 2)]; r32Matchups[9] = [getTeam('E', 2), getTeam('I', 2)];
+r32Matchups[10] = [getTeam('A', 1), getTeam(assignment[10], 3)]; r32Matchups[11] = [getTeam('L', 1), getTeam(assignment[11], 3)];
+r32Matchups[12] = [getTeam('J', 1), getTeam('H', 2)]; r32Matchups[13] = [getTeam('D', 2), getTeam('G', 2)];
+r32Matchups[14] = [getTeam('B', 1), getTeam(assignment[14], 3)]; r32Matchups[15] = [getTeam('K', 1), getTeam(assignment[15], 3)];
 r32Matchups.forEach((pair, idx) => {
-appData.knockout['r32'][idx].t1 = pair[0]?.name || '';
-appData.knockout['r32'][idx].f1 = pair[0]?.flag || '';
-appData.knockout['r32'][idx].t2 = pair[1]?.name || '';
-appData.knockout['r32'][idx].f2 = pair[1]?.flag || '';
+appData.knockout['r32'][idx].t1 = pair[0]?.name || ''; appData.knockout['r32'][idx].f1 = pair[0]?.flag || '';
+appData.knockout['r32'][idx].t2 = pair[1]?.name || ''; appData.knockout['r32'][idx].f2 = pair[1]?.flag || '';
 appData.knockout['r32'][idx].s1 = ''; appData.knockout['r32'][idx].s2 = ''; appData.knockout['r32'][idx].penaltyWinner = '';
 });
-
-['r16','qf','sf','f'].forEach(phase => {
-appData.knockout[phase].forEach(m => { m.t1 = ''; m.t2 = ''; m.f1 = ''; m.f2 = ''; m.s1 = ''; m.s2 = ''; m.penaltyWinner = ''; });
-});
+['r16','qf','sf','f'].forEach(phase => { appData.knockout[phase].forEach(m => { m.t1 = ''; m.t2 = ''; m.f1 = ''; m.f2 = ''; m.s1 = ''; m.s2 = ''; m.penaltyWinner = ''; }); });
 appData.thirdMatch = { t1: '', f1: '', t2: '', f2: '', s1: '', s2: '', penaltyWinner: '' };
-
 saveData(); renderKnockout(); switchTab('knockout');
 mostrarToast('✅ Chaveamento Oficial FIFA 2026 gerado!');
 }
 
 function updateKMatch(rId, mIdx, field, val) {
-const match = appData.knockout[rId][mIdx];
-match[field] = val;
+const match = appData.knockout[rId][mIdx]; match[field] = val;
 if (match.s1 !== '' && match.s2 !== '' && match.t1 && match.t2) {
-let s1 = parseInt(match.s1), s2 = parseInt(match.s2);
-let winnerName = '', winnerFlag = '', winnerDetermined = false;
+let s1 = parseInt(match.s1), s2 = parseInt(match.s2); let winnerName = '', winnerFlag = '', winnerDetermined = false;
 if (!isNaN(s1) && !isNaN(s2)) {
 if (s1 > s2) { winnerName = match.t1; winnerFlag = match.f1; winnerDetermined = true; }
 else if (s2 > s1) { winnerName = match.t2; winnerFlag = match.f2; winnerDetermined = true; }
-else if (match.penaltyWinner) {
-winnerName = match.penaltyWinner;
-winnerFlag = (winnerName === match.t1) ? match.f1 : match.f2;
-winnerDetermined = true;
-}
+else if (match.penaltyWinner) { winnerName = match.penaltyWinner; winnerFlag = (winnerName === match.t1) ? match.f1 : match.f2; winnerDetermined = true; }
 }
 if (winnerDetermined && winnerName) advanceTeam(rId, mIdx, winnerName, winnerFlag);
 }
@@ -452,23 +433,12 @@ saveData(); renderKnockout();
 }
 
 function advanceTeam(rId, mIdx, winnerName, winnerFlag) {
-if (rId === 'r32') {
-const t = r32ToR16[mIdx]; const m = appData.knockout['r16'][t.m];
-if (t.s === 0) { m.t1 = winnerName; m.f1 = winnerFlag; } else { m.t2 = winnerName; m.f2 = winnerFlag; }
-} else if (rId === 'r16') {
-const t = r16ToQF[mIdx]; const m = appData.knockout['qf'][t.m];
-if (t.s === 0) { m.t1 = winnerName; m.f1 = winnerFlag; } else { m.t2 = winnerName; m.f2 = winnerFlag; }
-} else if (rId === 'qf') {
-const t = qfToSF[mIdx]; const m = appData.knockout['sf'][t.m];
-if (t.s === 0) { m.t1 = winnerName; m.f1 = winnerFlag; } else { m.t2 = winnerName; m.f2 = winnerFlag; }
-} else if (rId === 'sf') {
-if (mIdx === 0) {
-appData.knockout['f'][0].t1 = winnerName; appData.knockout['f'][0].f1 = winnerFlag;
-const loser = getLoserFromMatch('sf', 0); if (loser) { appData.thirdMatch.t1 = loser.name; appData.thirdMatch.f1 = loser.flag; }
-} else {
-appData.knockout['f'][0].t2 = winnerName; appData.knockout['f'][0].f2 = winnerFlag;
-const loser = getLoserFromMatch('sf', 1); if (loser) { appData.thirdMatch.t2 = loser.name; appData.thirdMatch.f2 = loser.flag; }
-}
+if (rId === 'r32') { const t = r32ToR16[mIdx]; const m = appData.knockout['r16'][t.m]; if (t.s === 0) { m.t1 = winnerName; m.f1 = winnerFlag; } else { m.t2 = winnerName; m.f2 = winnerFlag; } }
+else if (rId === 'r16') { const t = r16ToQF[mIdx]; const m = appData.knockout['qf'][t.m]; if (t.s === 0) { m.t1 = winnerName; m.f1 = winnerFlag; } else { m.t2 = winnerName; m.f2 = winnerFlag; } }
+else if (rId === 'qf') { const t = qfToSF[mIdx]; const m = appData.knockout['sf'][t.m]; if (t.s === 0) { m.t1 = winnerName; m.f1 = winnerFlag; } else { m.t2 = winnerName; m.f2 = winnerFlag; } }
+else if (rId === 'sf') {
+if (mIdx === 0) { appData.knockout['f'][0].t1 = winnerName; appData.knockout['f'][0].f1 = winnerFlag; const loser = getLoserFromMatch('sf', 0); if (loser) { appData.thirdMatch.t1 = loser.name; appData.thirdMatch.f1 = loser.flag; } }
+else { appData.knockout['f'][0].t2 = winnerName; appData.knockout['f'][0].f2 = winnerFlag; const loser = getLoserFromMatch('sf', 1); if (loser) { appData.thirdMatch.t2 = loser.name; appData.thirdMatch.f2 = loser.flag; } }
 }
 saveData();
 }
@@ -476,8 +446,7 @@ saveData();
 function getLoserFromMatch(rId, mIdx) {
 const match = appData.knockout[rId][mIdx]; if (!match || !match.t1 || !match.t2) return null;
 let s1 = parseInt(match.s1), s2 = parseInt(match.s2); if (isNaN(s1) || isNaN(s2)) return null;
-if (s1 > s2) return { name: match.t2, flag: match.f2 };
-else if (s2 > s1) return { name: match.t1, flag: match.f1 };
+if (s1 > s2) return { name: match.t2, flag: match.f2 }; else if (s2 > s1) return { name: match.t1, flag: match.f1 };
 else if (match.penaltyWinner) return (match.penaltyWinner === match.t1) ? { name: match.t2, flag: match.f2 } : { name: match.t1, flag: match.f1 };
 return null;
 }
@@ -490,8 +459,7 @@ kRounds.forEach(r => {
 const col = document.createElement('div'); col.className = 'round';
 col.innerHTML = `<div class="round-title">${r.name}</div>`;
 if (r.id === 'third') {
-const tm = appData.thirdMatch;
-const showPenalty = (tm.s1 !== '' && tm.s2 !== '' && parseInt(tm.s1) === parseInt(tm.s2));
+const tm = appData.thirdMatch; const showPenalty = (tm.s1 !== '' && tm.s2 !== '' && parseInt(tm.s1) === parseInt(tm.s2));
 col.innerHTML += `<div class="k-match"><div class="k-team"><div class="k-team-info">${tm.f1 ? `<img src="https://flagcdn.com/20x15/${tm.f1}.png" class="team-flag">` : '<div style="width:20px;height:15px;background:#e2e8f0;"></div>'}<span>${tm.t1 || '?'}</span></div><input type="number" min="0" value="${tm.s1}" onchange="updateThirdMatch('s1', this.value)"></div><div class="k-team"><div class="k-team-info">${tm.f2 ? `<img src="https://flagcdn.com/20x15/${tm.f2}.png" class="team-flag">` : '<div style="width:20px;height:15px;background:#e2e8f0;"></div>'}<span>${tm.t2 || '?'}</span></div><input type="number" min="0" value="${tm.s2}" onchange="updateThirdMatch('s2', this.value)"></div>${showPenalty ? `<div class="penalty-area"><span class="penalty-label">⚽ PÊNALTIS:</span><select onchange="updateThirdMatch('penaltyWinner', this.value)"><option value="">Selecione...</option><option value="${tm.t1}" ${tm.penaltyWinner === tm.t1 ? 'selected' : ''}>${tm.t1}</option><option value="${tm.t2}" ${tm.penaltyWinner === tm.t2 ? 'selected' : ''}>${tm.t2}</option></select></div>` : ''}${(tm.s1 !== '' && tm.s2 !== '' && ((parseInt(tm.s1) > parseInt(tm.s2)) || (parseInt(tm.s2) > parseInt(tm.s1)) || tm.penaltyWinner)) ? `<div class="winner-badge">🥉 3º LUGAR: ${(parseInt(tm.s1) > parseInt(tm.s2)) ? tm.t1 : (parseInt(tm.s2) > parseInt(tm.s1)) ? tm.t2 : tm.penaltyWinner}</div>` : ''}</div>`;
 } else if (r.id === 'f') {
 const m = appData.knockout['f'][0]; if(m) {
@@ -511,18 +479,57 @@ container.appendChild(col);
 function renderAll() {
 const gCont = document.getElementById('groups-container'); gCont.innerHTML = '';
 for (let g in groupsDef) { let div = document.createElement('div'); div.id = `card-${g}`; div.className = 'group-card'; gCont.appendChild(div); renderGroupCard(g); }
-renderKnockout();
-renderThirdsView(); // Atualiza a aba de terceiros também
+renderKnockout(); renderThirdsView();
 }
 renderAll();
 
 function mostrarToast(msg) { let t = document.getElementById('toast-msg'); if (!t) { t = document.createElement('div'); t.id = 'toast-msg'; t.className = 'toast-msg'; document.body.appendChild(t); } t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 function exportarJSON() { const dados = { dataExportacao: new Date().toISOString(), versao: '1.0', appData: JSON.parse(JSON.stringify(appData)) }; const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'copa2026_backup_' + new Date().toISOString().slice(0,10) + '.json'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); mostrarToast('✅ Backup salvo!'); }
 function importarJSON(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const dados = JSON.parse(e.target.result); if (!dados.appData) { alert('Arquivo inválido.'); return; } appData = JSON.parse(JSON.stringify(dados.appData)); saveData(); renderAll(); mostrarToast('✅ Dados restaurados!'); } catch (err) { alert('Erro: ' + err.message); } }; reader.readAsText(file); event.target.value = ''; }
-function gerarHTML() { const clone = document.documentElement.cloneNode(true); const toolbar = clone.querySelector('.toolbar-backup'); if (toolbar) toolbar.remove(); const toast = clone.querySelector('.toast-msg'); if (toast) toast.remove(); const fileInput = clone.querySelector('#fileInputBackup'); if (fileInput) fileInput.remove(); const actions = clone.querySelector('.actions'); if (actions) actions.remove(); const tabs = clone.querySelector('.tabs'); if (tabs) tabs.remove(); const views = clone.querySelectorAll('.view'); views.forEach(view => { view.classList.remove('active'); view.style.display = 'block'; view.style.animation = 'none'; }); const knockoutView = clone.querySelector('#knockout'); const groupsView = clone.querySelector('#groups'); if (groupsView && knockoutView) { const divider = document.createElement('div'); divider.style.cssText = 'text-align:center; margin: 40px 0 30px 0; padding: 20px 0; border-top: 2px solid #e2e8f0; border-bottom: 2px solid #e2e8f0; background: #f8fafc;'; divider.innerHTML = '<h2 style="margin:0; font-size:22px; color:#1e293b; letter-spacing:1px;">⚽ FASE DE MATA-MATA</h2>'; knockoutView.parentNode.insertBefore(divider, knockoutView); } if (groupsView) { const groupTitle = document.createElement('div'); groupTitle.style.cssText = 'text-align:center; margin: 20px 0 30px 0; padding: 15px 0; background: #f8fafc; border-bottom: 2px solid #e2e8f0;'; groupTitle.innerHTML = '<h2 style="margin:0; font-size:22px; color:#1e293b; letter-spacing:1px;">🌍 FASE DE GRUPOS</h2>'; groupsView.insertBefore(groupTitle, groupsView.firstChild); } clone.querySelectorAll('input[type="number"]').forEach(input => { const span = document.createElement('span'); span.textContent = input.value !== '' ? input.value : '-'; span.style.cssText = 'display:inline-block; width:32px; height:30px; text-align:center; line-height:30px; font-weight:700; font-size:14px; border:1px solid #cbd5e1; border-radius:4px; background:#f1f5f9; color:#1e293b;'; input.parentNode.replaceChild(span, input); }); clone.querySelectorAll('select').forEach(select => { const span = document.createElement('span'); if (select.value && select.value !== '') span.textContent = '⭐ Vencedor nos pênaltis: ' + select.value; else span.textContent = ''; span.style.cssText = 'font-size:12px; color:#b45309; font-weight:600; padding: 4px 0;'; select.parentNode.replaceChild(span, select); }); const titleEl = clone.querySelector('title'); if (titleEl) titleEl.textContent = 'Copa do Mundo 2026 - Resultados Completos'; const header = clone.querySelector('header'); if (header) { const info = document.createElement('p'); info.style.cssText = 'text-align:center; font-size:13px; color:#64748b; margin-top:8px; margin-bottom:0;'; info.textContent = 'Documento gerado em: ' + new Date().toLocaleString('pt-BR'); header.appendChild(info); } const extraStyle = document.createElement('style'); extraStyle.textContent = `.view { display: block !important; } .groups-grid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important; } .bracket-container { display: flex !important; overflow-x: auto !important; gap: 30px !important; } .k-match, .group-card { break-inside: avoid; page-break-inside: avoid; }`; clone.querySelector('head').appendChild(extraStyle); const htmlCompleto = '<!DOCTYPE html>\n' + clone.outerHTML; const blob = new Blob([htmlCompleto], { type: 'text/html;charset=utf-8' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'Copa2026_Resultados_Completos_' + new Date().toISOString().slice(0,10) + '.html'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); mostrarToast('✅ HTML completo gerado!'); }
+
+function gerarHTML() {
+const clone = document.documentElement.cloneNode(true);
+const fabWrapper = clone.querySelector('.fab-wrapper'); if (fabWrapper) fabWrapper.remove();
+const toast = clone.querySelector('.toast-msg'); if (toast) toast.remove();
+const fileInput = clone.querySelector('#fileInputBackup'); if (fileInput) fileInput.remove();
+const views = clone.querySelectorAll('.view'); views.forEach(view => { view.classList.remove('active'); view.style.display = 'block'; view.style.animation = 'none'; });
+const knockoutView = clone.querySelector('#knockout'); const groupsView = clone.querySelector('#groups');
+if (groupsView && knockoutView) { const divider = document.createElement('div'); divider.style.cssText = 'text-align:center; margin: 40px 0 30px 0; padding: 20px 0; border-top: 2px solid #e2e8f0; border-bottom: 2px solid #e2e8f0; background: #f8fafc;'; divider.innerHTML = '<h2 style="margin:0; font-size:22px; color:#1e293b; letter-spacing:1px;">⚽ FASE DE MATA-MATA</h2>'; knockoutView.parentNode.insertBefore(divider, knockoutView); }
+if (groupsView) { const groupTitle = document.createElement('div'); groupTitle.style.cssText = 'text-align:center; margin: 20px 0 30px 0; padding: 15px 0; background: #f8fafc; border-bottom: 2px solid #e2e8f0;'; groupTitle.innerHTML = '<h2 style="margin:0; font-size:22px; color:#1e293b; letter-spacing:1px;">🌍 FASE DE GRUPOS</h2>'; groupsView.insertBefore(groupTitle, groupsView.firstChild); }
+clone.querySelectorAll('input[type="number"]').forEach(input => { const span = document.createElement('span'); span.textContent = input.value !== '' ? input.value : '-'; span.style.cssText = 'display:inline-block; width:32px; height:30px; text-align:center; line-height:30px; font-weight:700; font-size:14px; border:1px solid #cbd5e1; border-radius:4px; background:#f1f5f9; color:#1e293b;'; input.parentNode.replaceChild(span, input); });
+clone.querySelectorAll('select').forEach(select => { const span = document.createElement('span'); if (select.value && select.value !== '') span.textContent = '⭐ Vencedor nos pênaltis: ' + select.value; else span.textContent = ''; span.style.cssText = 'font-size:12px; color:#b45309; font-weight:600; padding: 4px 0;'; select.parentNode.replaceChild(span, select); });
+const titleEl = clone.querySelector('title'); if (titleEl) titleEl.textContent = 'Copa do Mundo 2026 - Resultados Completos';
+const header = clone.querySelector('header'); if (header) { const info = document.createElement('p'); info.style.cssText = 'text-align:center; font-size:13px; color:#64748b; margin-top:8px; margin-bottom:0;'; info.textContent = 'Documento gerado em: ' + new Date().toLocaleString('pt-BR'); header.appendChild(info); }
+const extraStyle = document.createElement('style'); extraStyle.textContent = `.view { display: block !important; } .groups-grid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important; } .bracket-container { display: flex !important; overflow-x: auto !important; gap: 30px !important; } .k-match, .group-card { break-inside: avoid; page-break-inside: avoid; }`; clone.querySelector('head').appendChild(extraStyle);
+const htmlCompleto = '<!DOCTYPE html>\n' + clone.outerHTML;
+const blob = new Blob([htmlCompleto], { type: 'text/html;charset=utf-8' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'Copa2026_Resultados_Completos_' + new Date().toISOString().slice(0,10) + '.html'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+mostrarToast('✅ HTML completo gerado!');
+}
+
 function limparMataMata() { if (!confirm('Limpar apenas o mata-mata?')) return; ['r32','r16','qf','sf','f'].forEach(phase => { appData.knockout[phase].forEach(m => { m.t1 = ''; m.t2 = ''; m.f1 = ''; m.f2 = ''; m.s1 = ''; m.s2 = ''; m.penaltyWinner = ''; }); }); appData.thirdMatch = { t1: '', f1: '', t2: '', f2: '', s1: '', s2: '', penaltyWinner: '' }; saveData(); renderKnockout(); mostrarToast('🗑️ Mata-mata limpo!'); }
 function verificarGruposCompletos() { let inc = []; for (let g in groupsDef) { if (!appData.groups[g].matches.every(m => m.s1 !== '' && m.s2 !== '')) inc.push(g); } return inc; }
-function toggleMenu() { const d = document.getElementById('menuDropdown'); const o = document.getElementById('menuOverlay'); const isOpen = d.classList.contains('show'); if (isOpen) { d.classList.remove('show'); o.classList.remove('show'); } else { d.classList.add('show'); o.classList.add('show'); } }
-function executarAcao(funcao) { toggleMenu(); setTimeout(() => { if (typeof window[funcao] === 'function') window[funcao](); }, 50); }
+
+// === LÓGICA DO NOVO MENU FAB ===
+function toggleMenu() {
+const wrapper = document.getElementById('fabWrapper');
+const dropdown = document.getElementById('menuDropdown');
+const overlay = document.getElementById('menuOverlay');
+const isOpen = dropdown.classList.contains('show');
+
+if (isOpen) {
+dropdown.classList.remove('show');
+overlay.classList.remove('show');
+wrapper.classList.remove('open');
+} else {
+dropdown.classList.add('show');
+overlay.classList.add('show');
+wrapper.classList.add('open');
+}
+}
+
+function executarAcao(funcao) {
+toggleMenu();
+setTimeout(() => { if (typeof window[funcao] === 'function') window[funcao](); }, 150);
+}
 </script>
 </body></html>
