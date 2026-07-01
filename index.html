@@ -5784,22 +5784,127 @@ function exportarJSON() { const dados = { dataExportacao: new Date().toISOString
 function importarJSON(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const dados = JSON.parse(e.target.result); if (!dados.appData) { alert('Arquivo inválido.'); return; } appData = JSON.parse(JSON.stringify(dados.appData)); saveData(); renderAll(); mostrarToast('✅ Dados restaurados!'); } catch (err) { alert('Erro: ' + err.message); } }; reader.readAsText(file); event.target.value = ''; }
 
 function gerarHTML() {
-const clone = document.documentElement.cloneNode(true);
-const fabWrapper = clone.querySelector('.fab-wrapper'); if (fabWrapper) fabWrapper.remove();
-const toast = clone.querySelector('.toast-msg'); if (toast) toast.remove();
-const fileInput = clone.querySelector('#fileInputBackup'); if (fileInput) fileInput.remove();
-const views = clone.querySelectorAll('.view'); views.forEach(view => { view.classList.remove('active'); view.style.display = 'block'; view.style.animation = 'none'; });
-const knockoutView = clone.querySelector('#knockout'); const groupsView = clone.querySelector('#groups');
-if (groupsView && knockoutView) { const divider = document.createElement('div'); divider.style.cssText = 'text-align:center; margin: 40px 0 30px 0; padding: 20px 0; border-top: 2px solid #e2e8f0; border-bottom: 2px solid #e2e8f0; background: #f8fafc;'; divider.innerHTML = '<h2 style="margin:0; font-size:22px; color:#1e293b; letter-spacing:1px;">⚽ FASE DE MATA-MATA</h2>'; knockoutView.parentNode.insertBefore(divider, knockoutView); }
-if (groupsView) { const groupTitle = document.createElement('div'); groupTitle.style.cssText = 'text-align:center; margin: 20px 0 30px 0; padding: 15px 0; background: #f8fafc; border-bottom: 2px solid #e2e8f0;'; groupTitle.innerHTML = '<h2 style="margin:0; font-size:22px; color:#1e293b; letter-spacing:1px;"> FASE DE GRUPOS</h2>'; groupsView.insertBefore(groupTitle, groupsView.firstChild); }
-clone.querySelectorAll('input[type="number"]').forEach(input => { const span = document.createElement('span'); span.textContent = input.value !== '' ? input.value : '-'; span.style.cssText = 'display:inline-block; width:32px; height:30px; text-align:center; line-height:30px; font-weight:700; font-size:14px; border:1px solid #cbd5e1; border-radius:4px; background:#f1f5f9; color:#1e293b;'; input.parentNode.replaceChild(span, input); });
-clone.querySelectorAll('select').forEach(select => { const span = document.createElement('span'); if (select.value && select.value !== '') span.textContent = '⭐ Vencedor nos pênaltis: ' + select.value; else span.textContent = ''; span.style.cssText = 'font-size:12px; color:#b45309; font-weight:600; padding: 4px 0;'; select.parentNode.replaceChild(span, select); });
-const titleEl = clone.querySelector('title'); if (titleEl) titleEl.textContent = 'Copa do Mundo 2026 - Resultados Completos';
-const header = clone.querySelector('header'); if (header) { const info = document.createElement('p'); info.style.cssText = 'text-align:center; font-size:13px; color:#64748b; margin-top:8px; margin-bottom:0;'; info.textContent = 'Documento gerado em: ' + new Date().toLocaleString('pt-BR'); header.appendChild(info); }
-const extraStyle = document.createElement('style'); extraStyle.textContent = `.view { display: block !important; } .groups-grid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important; } .bracket-wrapper { display: flex !important; gap: 30px !important; overflow-x: auto !important; } .bracket-left, .bracket-right { display: flex !important; gap: 30px !important; flex: 1 !important; } .bracket-center { display: flex !important; flex-direction: column !important; gap: 30px !important; } .round { height: calc(8 * 90px) !important; } .match-slot { display: flex !important; align-items: center !important; justify-content: center !important; } .k-match, .group-card { break-inside: avoid; page-break-inside: avoid; }`; clone.querySelector('head').appendChild(extraStyle);
-const htmlCompleto = '<!DOCTYPE html>\n' + clone.outerHTML;
-const blob = new Blob([htmlCompleto], { type: 'text/html;charset=utf-8' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'Copa2026_Resultados_Completos_' + new Date().toISOString().slice(0,10) + '.html'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-mostrarToast('✅ HTML completo gerado!');
+    // 1. Clona o documento inteiro
+    const clone = document.documentElement.cloneNode(true);
+
+    // 2. O GRANDE SEGREDO: Remove TODOS os scripts para evitar re-renderização via localStorage
+    clone.querySelectorAll('script').forEach(el => el.remove());
+
+    // 3. Remove elementos de UI, menus e abas (não fazem sentido no relatório estático)
+    const removeSelectors = ['.fab-wrapper', '.toast-msg', '#fileInputBackup', '.menu-overlay', '.tabs-wrapper', '.nav-row'];
+    removeSelectors.forEach(sel => {
+        clone.querySelectorAll(sel).forEach(el => el.remove());
+    });
+
+    // 4. Remove TODOS os atributos de evento (onchange, onclick, oninput, etc)
+    clone.querySelectorAll('*').forEach(el => {
+        Array.from(el.attributes).forEach(attr => {
+            // Mantemos o onerror das imagens para as bandeiras, mas removemos o resto
+            if (attr.name.startsWith('on') && attr.name !== 'onerror') {
+                el.removeAttribute(attr.name);
+            }
+        });
+    });
+
+    // 5. Exibe todas as views (Grupos, Terceiros, Mata-Mata) e remove animações
+    clone.querySelectorAll('.view').forEach(view => {
+        view.classList.remove('active');
+        view.style.display = 'block';
+        view.style.animation = 'none';
+    });
+
+    // 6. Adiciona separadores e títulos para o relatório
+    const knockoutView = clone.querySelector('#knockout');
+    const groupsView = clone.querySelector('#groups');
+    const thirdsView = clone.querySelector('#thirds');
+
+    if (groupsView) {
+        const groupTitle = document.createElement('div');
+        groupTitle.style.cssText = 'text-align:center; margin: 20px 0 30px 0; padding: 15px 0; background: #f8fafc; border-bottom: 2px solid #e2e8f0;';
+        groupTitle.innerHTML = '<h2 style="margin:0; font-size:22px; color:#1e293b; letter-spacing:1px;">FASE DE GRUPOS</h2>';
+        groupsView.insertBefore(groupTitle, groupsView.firstChild);
+    }
+
+    if (thirdsView) {
+        const thirdsTitle = document.createElement('div');
+        thirdsTitle.style.cssText = 'text-align:center; margin: 40px 0 30px 0; padding: 20px 0; border-top: 2px solid #e2e8f0; border-bottom: 2px solid #e2e8f0; background: #f8fafc;';
+        thirdsTitle.innerHTML = '<h2 style="margin:0; font-size:22px; color:#1e293b; letter-spacing:1px;">MELHORES TERCEIROS</h2>';
+        thirdsView.parentNode.insertBefore(thirdsTitle, thirdsView);
+    }
+
+    if (knockoutView) {
+        const divider = document.createElement('div');
+        divider.style.cssText = 'text-align:center; margin: 40px 0 30px 0; padding: 20px 0; border-top: 2px solid #e2e8f0; border-bottom: 2px solid #e2e8f0; background: #f8fafc;';
+        divider.innerHTML = '<h2 style="margin:0; font-size:22px; color:#1e293b; letter-spacing:1px;">⚽ FASE DE MATA-MATA</h2>';
+        knockoutView.parentNode.insertBefore(divider, knockoutView);
+    }
+
+    // 7. SUBSTITUI INPUTS POR TEXTO PURO (Sem bordas, sem fundo, sem aparência de formulário)
+    clone.querySelectorAll('input[type="number"]').forEach(input => {
+        const span = document.createElement('span');
+        span.textContent = input.value !== '' ? input.value : '-';
+        span.style.cssText = 'display:inline-block; min-width:20px; text-align:center; font-weight:700; font-size:15px; color:#1e293b; margin: 0 4px; background:transparent; border:none;';
+        input.parentNode.replaceChild(span, input);
+    });
+
+    // 8. SUBSTITUI SELECTS DE PÊNALTIS POR TEXTO
+    clone.querySelectorAll('select').forEach(select => {
+        const span = document.createElement('span');
+        if (select.value && select.value !== '') {
+            span.textContent = '⭐ Pênaltis: ' + select.value;
+            span.style.cssText = 'display:block; font-size:12px; color:#b45309; font-weight:600; margin-top: 6px; text-align:center;';
+        } else {
+            span.textContent = '';
+        }
+        select.parentNode.replaceChild(span, select);
+    });
+
+    // 9. Atualiza título e cabeçalho
+    const titleEl = clone.querySelector('title');
+    if (titleEl) titleEl.textContent = 'Copa do Mundo 2026 - Resultados Completos';
+    
+    const header = clone.querySelector('header');
+    if (header) {
+        const info = document.createElement('p');
+        info.style.cssText = 'text-align:center; font-size:13px; color:#64748b; margin-top:8px; margin-bottom:0;';
+        info.textContent = 'Documento gerado em: ' + new Date().toLocaleString('pt-BR');
+        header.appendChild(info);
+    }
+
+    // 10. CSS de Emergência e Formatação para Impressão/Leitura
+    const extraStyle = document.createElement('style');
+    extraStyle.textContent = `
+        body { padding-bottom: 20px !important; }
+        .view { display: block !important; }
+        .groups-grid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important; }
+        .bracket-wrapper { display: flex !important; gap: 30px !important; overflow-x: auto !important; padding: 20px !important; }
+        .bracket-left, .bracket-right { display: flex !important; gap: 30px !important; flex: 1 !important; }
+        .bracket-center { display: flex !important; flex-direction: column !important; gap: 30px !important; }
+        .round { height: auto !important; min-height: calc(8 * 90px); }
+        .match-slot { display: flex !important; align-items: center !important; justify-content: center !important; }
+        .k-match, .group-card { break-inside: avoid; page-break-inside: avoid; }
+        .g-match { justify-content: center !important; gap: 10px !important; }
+        .team-label { width: auto !important; }
+        .penalty-area { justify-content: center !important; }
+        
+        /* REDE DE SEGURANÇA: Esconde qualquer input, select ou botão que tenha sobrado */
+        input, select, button { display: none !important; }
+    `;
+    clone.querySelector('head').appendChild(extraStyle);
+
+    // 11. Gera e baixa o arquivo
+    const htmlCompleto = '<!DOCTYPE html>\n' + clone.outerHTML;
+    const blob = new Blob([htmlCompleto], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Copa2026_Resultados_Completos_' + new Date().toISOString().slice(0,10) + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    mostrarToast('✅ HTML estático gerado com sucesso!');
 }
 
 function limparMataMata() { if (!confirm('Limpar apenas o mata-mata?')) return; ['r32','r16','qf','sf','f'].forEach(phase => { appData.knockout[phase].forEach(m => { m.t1 = ''; m.t2 = ''; m.f1 = ''; m.f2 = ''; m.s1 = ''; m.s2 = ''; m.penaltyWinner = ''; }); }); appData.thirdMatch = { t1: '', f1: '', t2: '', f2: '', s1: '', s2: '', penaltyWinner: '' }; saveData(); renderKnockout(); mostrarToast('🗑️ Mata-mata limpo!'); }
